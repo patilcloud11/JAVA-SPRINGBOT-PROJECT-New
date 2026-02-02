@@ -1,4 +1,5 @@
-/Users/shivakumar/Documents/app_projects/java_projects/DataStore/src/main/java/com/datastore/person/controller/StudentController.java
-/Users/shivakumar/Documents/app_projects/java_projects/DataStore/src/main/java/com/datastore/person/repository/StudentRepository.java
-/Users/shivakumar/Documents/app_projects/java_projects/DataStore/src/main/java/com/datastore/person/pojo/Student.java
-/Users/shivakumar/Documents/app_projects/java_projects/DataStore/src/main/java/com/datastore/person/DataStoreApplication.java
+/root/Java-springboot-project/backend/src/main/java/com/datastore/person/repository/StudentRepository.java
+/root/Java-springboot-project/backend/src/main/java/com/datastore/person/controller/StudentController.java
+/root/Java-springboot-project/backend/src/main/java/com/datastore/person/controller/HomeController.java
+/root/Java-springboot-project/backend/src/main/java/com/datastore/person/DataStoreApplication.java
+/root/Java-springboot-project/backend/src/main/java/com/datastore/person/pojo/Student.java

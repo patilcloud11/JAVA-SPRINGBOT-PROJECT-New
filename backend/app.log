@@ -1,0 +1,41 @@
+nohup: ignoring input
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+ :: Spring Boot ::               (v2.7.18)
+
+2026-02-02 17:31:26.650  INFO 37798 --- [           main] c.datastore.person.DataStoreApplication  : Starting DataStoreApplication v0.0.7 using Java 17.0.17 on ip-172-31-13-248.ap-south-1.compute.internal with PID 37798 (/root/Java-springboot-project/backend/target/datastore-0.0.7.jar started by root in /root/Java-springboot-project/backend)
+2026-02-02 17:31:26.654  INFO 37798 --- [           main] c.datastore.person.DataStoreApplication  : No active profile set, falling back to 1 default profile: "default"
+2026-02-02 17:31:28.402  INFO 37798 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-02-02 17:31:28.505  INFO 37798 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 85 ms. Found 1 JPA repository interfaces.
+2026-02-02 17:31:29.436  INFO 37798 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 8084 (http)
+2026-02-02 17:31:29.449  INFO 37798 --- [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-02-02 17:31:29.449  INFO 37798 --- [           main] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.83]
+2026-02-02 17:31:29.548  INFO 37798 --- [           main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2026-02-02 17:31:29.549  INFO 37798 --- [           main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 2761 ms
+2026-02-02 17:31:29.651 DEBUG 37798 --- [           main] i.m.c.u.i.logging.InternalLoggerFactory  : Using SLF4J as the default logging framework
+2026-02-02 17:31:30.081  INFO 37798 --- [           main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-02-02 17:31:30.166  INFO 37798 --- [           main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 5.6.15.Final
+2026-02-02 17:31:30.411  INFO 37798 --- [           main] o.hibernate.annotations.common.Version   : HCANN000001: Hibernate Commons Annotations {5.1.2.Final}
+2026-02-02 17:31:30.582  INFO 37798 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-02-02 17:31:30.865  INFO 37798 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-02-02 17:31:30.897  INFO 37798 --- [           main] org.hibernate.dialect.Dialect            : HHH000400: Using dialect: org.hibernate.dialect.MySQL8Dialect
+2026-02-02 17:31:31.813  INFO 37798 --- [           main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+2026-02-02 17:31:31.828  INFO 37798 --- [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-02-02 17:31:32.449  WARN 37798 --- [           main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-02-02 17:31:33.285  INFO 37798 --- [           main] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 15 endpoint(s) beneath base path '/actuator'
+2026-02-02 17:31:33.344  INFO 37798 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8084 (http) with context path ''
+2026-02-02 17:31:33.372  INFO 37798 --- [           main] c.datastore.person.DataStoreApplication  : Started DataStoreApplication in 7.533 seconds (JVM running for 8.207)
+2026-02-02 17:49:32.902  INFO 37798 --- [nio-8084-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-02-02 17:49:32.905  INFO 37798 --- [nio-8084-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-02-02 17:49:32.908  INFO 37798 --- [nio-8084-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 2 ms
+2026-02-02 17:49:32.991  INFO 37798 --- [nio-8084-exec-1] c.d.person.controller.StudentController  : Getting all students
+2026-02-02 17:59:29.553  INFO 37798 --- [nio-8084-exec-6] c.d.person.controller.StudentController  : Getting all students
+2026-02-02 17:59:29.573  INFO 37798 --- [nio-8084-exec-7] c.d.person.controller.StudentController  : Getting all students
+2026-02-02 17:59:35.952  INFO 37798 --- [io-8084-exec-10] c.d.person.controller.StudentController  : Posted student to DB : john
+2026-02-02 17:59:35.964  INFO 37798 --- [nio-8084-exec-1] c.d.person.controller.StudentController  : Getting all students
+2026-02-02 17:59:36.070  INFO 37798 --- [nio-8084-exec-3] c.d.person.controller.StudentController  : Getting all students
