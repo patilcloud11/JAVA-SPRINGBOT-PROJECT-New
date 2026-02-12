@@ -31,7 +31,7 @@ pipeline {
                  docker kill \$(docker ps -q) 2>/dev/null || true
                  docker rm \$(docker ps -aq) 2>/dev/null || true
 
-                 docker run -d -p 8080:8080 --name backend-container datastore:${params.App_Version}
+                 docker run -d -p 9090:8080 --name backend-container datastore:${params.App_Version}
                  docker run -d -p 3000:3000 --name frontend-container frontend:${params.App_Version}
                """
             }
