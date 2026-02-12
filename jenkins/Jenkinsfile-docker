@@ -9,7 +9,7 @@ pipeline {
 
         stage('Checkout') {
             steps {
-                git 'https://github.com/patilcloud11/JAVA-SPRINGBOT-PROJECT-New.git'
+                git branch: 'main', url: 'https://github.com/patilcloud11/JAVA-SPRINGBOT-PROJECT-New.git'
             }
         }
 
