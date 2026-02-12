@@ -1,103 +1,41 @@
-@Library('my-shared-library') _
 pipeline {
     agent any
 
-    environment {
-        DOCKERHUB_CREDENTIALS = credentials('dockerhub')
-        GITHUB_CREDENTIALS = credentials('github')
-        JFROG_CREDENTIALS = credentials('jfrog-user')
-    }
-
     parameters {
-        choice(name: 'Action', choices: "create\ndelete", description: "Choose create/delete")
-        string(name: 'App_Version', defaultValue: '', description: 'Application Tag')
+        string(name: 'App_Version', defaultValue: 'v1', description: 'Application Tag')
     }
 
     stages {
-        stage('checkout') {
-            when { expression { params.Action == 'create' } }
+
+        stage('Checkout') {
             steps {
-                gitCheckout(
-                    branch: "master",
-                    url: "https://github.com/CloudTechDevOps/Java-springboot-project.git"
-                )
+                git 'https://github.com/patilcloud11/JAVA-SPRINGBOT-PROJECT-New.git'
             }
         }
 
-        stage('maven build') {
+        stage('Build Backend Image') {
             steps {
-                script {
-                    dir('backend') {
-                        mavenBuild()
-                    }
-                }
+                sh 'docker build -t datastore:${App_Version} ./backend'
             }
         }
 
-        stage('maven test') {
+        stage('Build Frontend Image') {
             steps {
-                script {
-                    dir('backend') {
-                        mavenTest()
-                    }
-                }
+                sh 'docker build -t frontend:${App_Version} ./frontend'
             }
         }
 
-        stage('static code analysis') {
+        stage('Deploy Containers') {
             steps {
-                script {
-                    dir('backend') {
-                        def SonarQubecredentialsId = 'sonarqube'
-                        staticCodeAnalysis(SonarQubecredentialsId)
-                    }
-                }
-            }
-        }
+                sh '''
+                docker stop backend-container || true
+                docker rm backend-container || true
+                docker stop frontend-container || true
+                docker rm frontend-container || true
 
-        stage('uploading artifacts to jfrog') {
-            steps {
-                script {
-                    // Note: path updated to backend/target
-                    artifactsToJfrog(
-                        "$JFROG_CREDENTIALS_USR",
-                        "$JFROG_CREDENTIALS_PSW",
-                        "./backend/target/datastore-*.jar",
-                        "http://3.110.159.198:8082/artifactory/datastore/"
-                    )
-                }
-            }
-        }
-
-        stage('docker image build') {
-            steps {
-                script {
-                    dockerImageBuild("datastore", "${App_Version}", "latest")
-                }
-            }
-        }
-
-        stage("docker image scan") {
-            steps {
-                script {
-                    dockerImageScan("datastore", "${App_Version}", "8072388539")
-                }
-            }
-        }
-
-        stage('docker image push') {
-            steps {
-                script {
-                    dockerImagePush("$DOCKERHUB_CREDENTIALS_USR", "$DOCKERHUB_CREDENTIALS_PSW", "datastore", "${App_Version}")
-                }
-            }
-        }
-
-        stage('removing unused images') {
-            steps {
-                script {
-                    cleaningDockerImages()
-                }
+                docker run -d -p 8080:8080 --name backend-container datastore:${App_Version}
+                docker run -d -p 3000:3000 --name frontend-container frontend:${App_Version}
+                '''
             }
         }
     }
