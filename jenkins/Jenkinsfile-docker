@@ -26,17 +26,15 @@ pipeline {
         }
 
         stage('Deploy Containers') {
-            steps {
-                sh '''
-                docker stop backend-container || true
-                docker rm backend-container || true
-                docker stop frontend-container || true
-                docker rm frontend-container || true
+    steps {
+        sh '''
+        docker kill $(docker ps -q) || true
+        docker rm $(docker ps -aq) || true
 
-                docker run -d -p 8080:8080 --name backend-container datastore:${App_Version}
-                docker run -d -p 3000:3000 --name frontend-container frontend:${App_Version}
-                '''
-            }
-        }
+        docker run -d -p 8080:8080 --name backend-container datastore:${params.App_Version}
+        docker run -d -p 3000:3000 --name frontend-container frontend:${params.App_Version}
+        '''
     }
 }
+    }
+}x
