@@ -25,37 +25,37 @@ jobs:
       # ==============================
       # Setup Java for Spring Boot
       # ==============================
-      - name: Set up JDK
-        uses: actions/setup-java@v4
-        with:
-          distribution: 'temurin'
-          java-version: '17'
+      # - name: Set up JDK
+      #   uses: actions/setup-java@v4
+      #   with:
+      #     distribution: 'temurin'
+      #     java-version: '17'
 
       # ==============================
       # Setup NodeJS for Frontend
       # ==============================
-      - name: Setup NodeJS
-        uses: actions/setup-node@v4
-        with:
-          node-version: '18'
+      # - name: Setup NodeJS
+      #   uses: actions/setup-node@v4
+      #   with:
+      #     node-version: '18'
 
       # ==============================
       # Build Backend
       # ==============================
-      - name: Build Backend
-        working-directory: ./backend
-        run: |
-          chmod +x mvnw || true
-          ./mvnw clean package -DskipTests || mvn clean package -DskipTests
+      # - name: Build Backend
+      #   working-directory: ./backend
+      #   run: |
+      #     chmod +x mvnw || true
+      #     ./mvnw clean package -DskipTests || mvn clean package -DskipTests
 
       # ==============================
       # Build Frontend
       # ==============================
-      - name: Build Frontend
-        working-directory: ./frontend
-        run: |
-          npm install
-          npm run build
+      # - name: Build Frontend
+      #   working-directory: ./frontend
+      #   run: |
+      #     npm install
+      #     npm run build
 
       # ==============================
       # Docker Build Backend
