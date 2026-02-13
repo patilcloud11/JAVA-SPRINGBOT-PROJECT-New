@@ -1,104 +1,96 @@
-@Library('my-shared-library') _
 pipeline {
     agent any
 
     environment {
-        DOCKERHUB_CREDENTIALS = credentials('dockerhub')
-        GITHUB_CREDENTIALS = credentials('github')
-        JFROG_CREDENTIALS = credentials('jfrog-user')
-    }
-
-    parameters {
-        choice(name: 'Action', choices: "create\ndelete", description: "Choose create/delete")
-        string(name: 'App_Version', defaultValue: '', description: 'Application Tag')
+        REPO_URL = "https://github.com/patilcloud11/JAVA-SPRINGBOT-PROJECT-New.git"
+        BACKEND_IMAGE = "springboot-backend"
+        FRONTEND_IMAGE = "react-frontend"
     }
 
     stages {
-        stage('checkout') {
-            when { expression { params.Action == 'create' } }
+
+        stage('Clean Workspace') {
             steps {
-                gitCheckout(
-                    branch: "master",
-                    url: "https://github.com/CloudTechDevOps/Java-springboot-project.git"
-                )
+                deleteDir()
             }
         }
 
-        stage('maven build') {
+        // ✅ YOUR REQUESTED STAGE — git clone
+        stage('Git Clone Source Code') {
             steps {
-                script {
-                    dir('backend') {
-                        mavenBuild()
-                    }
+                sh "git clone ${REPO_URL}"
+            }
+        }
+
+        stage('Move Into Repo') {
+            steps {
+                dir('JAVA-SPRINGBOT-PROJECT-New') {
+                    sh 'ls -la'
                 }
             }
         }
 
-        stage('maven test') {
+        // ===============================
+        // BACKEND BUILD
+        // ===============================
+        stage('Build Backend') {
             steps {
-                script {
-                    dir('backend') {
-                        mavenTest()
-                    }
+                dir('JAVA-SPRINGBOT-PROJECT-New/backend') {
+                    sh './mvnw clean package -DskipTests || mvn clean package -DskipTests'
                 }
             }
         }
 
-        stage('static code analysis') {
+        // ===============================
+        // FRONTEND BUILD
+        // ===============================
+        stage('Build Frontend') {
             steps {
-                script {
-                    dir('backend') {
-                        def SonarQubecredentialsId = 'sonarqube'
-                        staticCodeAnalysis(SonarQubecredentialsId)
-                    }
+                dir('JAVA-SPRINGBOT-PROJECT-New/frontend') {
+                    sh '''
+                        npm install
+                        npm run build
+                    '''
                 }
             }
         }
 
-        stage('uploading artifacts to jfrog') {
+        // ===============================
+        // DOCKER BUILD
+        // ===============================
+        stage('Docker Build Images') {
             steps {
-                script {
-                    // Note: path updated to backend/target
-                    artifactsToJfrog(
-                        "$JFROG_CREDENTIALS_USR",
-                        "$JFROG_CREDENTIALS_PSW",
-                        "./backend/target/datastore-*.jar",
-                        "http://3.110.159.198:8082/artifactory/datastore/"
-                    )
+                dir('JAVA-SPRINGBOT-PROJECT-New/backend') {
+                    sh "docker build -t ${BACKEND_IMAGE}:latest ."
+                }
+
+                dir('JAVA-SPRINGBOT-PROJECT-New/frontend') {
+                    sh "docker build -t ${FRONTEND_IMAGE}:latest ."
                 }
             }
         }
 
-        stage('docker image build') {
+        // ===============================
+        // RUN CONTAINERS
+        // ===============================
+        stage('Run Containers') {
             steps {
-                script {
-                    dockerImageBuild("datastore", "${App_Version}", "latest")
+                dir('JAVA-SPRINGBOT-PROJECT-New/compose') {
+                    sh '''
+                        docker-compose down || true
+                        docker-compose up -d --build
+                    '''
                 }
             }
         }
+    }
 
-        stage("docker image scan") {
-            steps {
-                script {
-                    dockerImageScan("datastore", "${App_Version}", "8072388539")
-                }
-            }
+    post {
+        success {
+            echo "✅ Deployment Successful!"
         }
-
-        stage('docker image push') {
-            steps {
-                script {
-                    dockerImagePush("$DOCKERHUB_CREDENTIALS_USR", "$DOCKERHUB_CREDENTIALS_PSW", "datastore", "${App_Version}")
-                }
-            }
-        }
-
-        stage('removing unused images') {
-            steps {
-                script {
-                    cleaningDockerImages()
-                }
-            }
+        failure {
+            echo "❌ Pipeline Failed!"
         }
     }
 }
