@@ -1,20 +1,20 @@
-name: CI-CD Docker Deploy
+#1 name: CI-CD Docker Deploy
 
-on:
-  push:
-    branches:
-      - main
-  workflow_dispatch:
+# on:
+#   push:
+#     branches:
+#       - main
+#   workflow_dispatch:
 
-jobs:
-  build-and-deploy:
-    runs-on: ubuntu-latest
+# jobs:
+#   build-and-deploy:
+#     runs-on: ubuntu-latest
 
-    env:
-      BACKEND_IMAGE: springboot-backend
-      FRONTEND_IMAGE: react-frontend
+#     env:
+#       BACKEND_IMAGE: springboot-backend
+#       FRONTEND_IMAGE: react-frontend
 
-    steps:
+#     steps:
 
       # ==============================
       # ✅ Clone Source Code (git clone equivalent)
@@ -60,22 +60,22 @@ jobs:
       # ==============================
       # Docker Build Backend
       # ==============================
-      - name: Docker Build Backend Image
-        working-directory: ./backend
-        run: docker build -t $BACKEND_IMAGE:latest .
+      #2 - name: Docker Build Backend Image
+      #   working-directory: ./backend
+      #   run: docker build -t $BACKEND_IMAGE:latest .
 
       # ==============================
       # Docker Build Frontend Image
       # ==============================
-      - name: Docker Build Frontend Image
-        working-directory: ./frontend
-        run: docker build -t $FRONTEND_IMAGE:latest .
+      #3 - name: Docker Build Frontend Image
+      #   working-directory: ./frontend
+      #   run: docker build -t $FRONTEND_IMAGE:latest .
 
-      # ==============================
-      # Run Docker Compose (Deploy)
-      # ==============================
-      - name: Run Containers
-        working-directory: ./compose
+      # # ==============================
+      # # Run Docker Compose (Deploy)
+      # # ==============================
+      # - name: Run Containers
+      #   working-directory: ./compose
         run: |
           docker compose down || true
           docker compose up -d --build
