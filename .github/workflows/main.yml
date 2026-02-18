@@ -1,81 +1,51 @@
-#1 name: CI-CD Docker Deploy
+name: Deploy Docker App to EC2
 
-# on:
-#   push:
-#     branches:
-#       - main
-#   workflow_dispatch:
+on:
+  push:
+    branches:
+      - main
 
-# jobs:
-#   build-and-deploy:
-#     runs-on: ubuntu-latest
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
 
-#     env:
-#       BACKEND_IMAGE: springboot-backend
-#       FRONTEND_IMAGE: react-frontend
-
-#     steps:
-
-      # ==============================
-      # ✅ Clone Source Code (git clone equivalent)
-      # ==============================
-      - name: Checkout Repository
+    steps:
+      - name: Checkout code
         uses: actions/checkout@v4
 
-      # ==============================
-      # Setup Java for Spring Boot
-      # ==============================
-      # - name: Set up JDK
-      #   uses: actions/setup-java@v4
-      #   with:
-      #     distribution: 'temurin'
-      #     java-version: '17'
-
-      # ==============================
-      # Setup NodeJS for Frontend
-      # ==============================
-      # - name: Setup NodeJS
-      #   uses: actions/setup-node@v4
-      #   with:
-      #     node-version: '18'
-
-      # ==============================
-      # Build Backend
-      # ==============================
-      # - name: Build Backend
-      #   working-directory: ./backend
-      #   run: |
-      #     chmod +x mvnw || true
-      #     ./mvnw clean package -DskipTests || mvn clean package -DskipTests
-
-      # ==============================
-      # Build Frontend
-      # ==============================
-      # - name: Build Frontend
-      #   working-directory: ./frontend
-      #   run: |
-      #     npm install
-      #     npm run build
-
-      # ==============================
-      # Docker Build Backend
-      # ==============================
-      #2 - name: Docker Build Backend Image
-      #   working-directory: ./backend
-      #   run: docker build -t $BACKEND_IMAGE:latest .
-
-      # ==============================
-      # Docker Build Frontend Image
-      # ==============================
-      #3 - name: Docker Build Frontend Image
-      #   working-directory: ./frontend
-      #   run: docker build -t $FRONTEND_IMAGE:latest .
-
-      # # ==============================
-      # # Run Docker Compose (Deploy)
-      # # ==============================
-      # - name: Run Containers
-      #   working-directory: ./compose
+      - name: Setup SSH
         run: |
-          docker compose down || true
-          docker compose up -d --build
+          mkdir -p ~/.ssh
+          echo "${{ secrets.EC2_SSH_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H ${{ secrets.EC2_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Build & Deploy on EC2
+        run: |
+          ssh ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
+            set -e
+            cd ~
+
+            if [ ! -d Java-springboot-project ]; then
+              git clone https://github.com/ManmathGantayat/Java-springboot-project.git
+            fi
+
+            cd Java-springboot-project
+            git pull origin main
+
+            cd backend
+            docker build -t spring-backend:latest .
+            cd ..
+
+            cd frontend
+            docker build -t streamlit-frontend:latest .
+            cd ..
+
+            docker stop backend || true
+            docker rm backend || true
+            docker stop frontend || true
+            docker rm frontend || true
+
+            docker run -d --name backend -p 8084:8084 spring-backend:latest
+            docker run -d --name frontend -p 8501:8501 streamlit-frontend:latest
+          EOF
