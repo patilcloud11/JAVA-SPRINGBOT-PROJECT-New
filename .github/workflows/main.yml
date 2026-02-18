@@ -49,3 +49,4 @@ jobs:
             docker run -d --name backend -p 8084:8084 spring-backend:latest
             docker run -d --name frontend -p 8501:8501 streamlit-frontend:latest
           EOF
+          #done
