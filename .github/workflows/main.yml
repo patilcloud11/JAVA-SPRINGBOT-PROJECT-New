@@ -20,33 +20,27 @@ jobs:
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -H ${{ secrets.EC2_HOST }} >> ~/.ssh/known_hosts
 
-      - name: Build & Deploy on EC2
+      - name: Deploy to EC2
         run: |
-          ssh ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
+          ssh ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << EOF
             set -e
             cd ~
 
-            if [ ! -d Java-springboot-project ]; then
+            if [ ! -d JAVA-SPRINGBOT-PROJECT-New ]; then
               git clone https://github.com/patilcloud11/JAVA-SPRINGBOT-PROJECT-New.git
             fi
 
-            cd Java-springboot-project
+            cd JAVA-SPRINGBOT-PROJECT-New
             git pull origin main
-
-            cd backend
-            docker build -t spring-backend:latest .
-            cd ..
-
-            cd frontend
-            docker build -t streamlit-frontend:latest .
-            cd ..
 
             docker stop backend || true
             docker rm backend || true
             docker stop frontend || true
             docker rm frontend || true
 
-            docker run -d --name backend -p 8084:8084 spring-backend:latest
-            docker run -d --name frontend -p 8501:8501 streamlit-frontend:latest
+            docker build -t spring-backend ./backend
+            docker build -t streamlit-frontend ./frontend
+
+            docker run -d --name backend -p 8084:8084 spring-backend
+            docker run -d --name frontend -p 8501:8501 streamlit-frontend
           EOF
-          #done
